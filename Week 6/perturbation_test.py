@@ -61,9 +61,16 @@ def stress_test_graph(G):
     return results
 
 def iterative_test(n, m, show_plots=True):
-    # Generate a scale-free graph using Barabasi-Albert model (has clear hub nodes)
-    print("Generating Barabasi-Albert graph...")
-    G = nx.barabasi_albert_graph(n=n, m=m, seed=42)
+    # Allow a special case for a complete graph when m == 'complete'
+    if m == 'complete':
+        print(f"Generating Complete graph (n={n})...")
+        G = nx.complete_graph(n)
+        graph_label = f"Complete Graph (n={n})"
+    else:
+        # Generate a scale-free graph using Barabasi-Albert model (has clear hub nodes)
+        print("Generating Barabasi-Albert graph...")
+        G = nx.barabasi_albert_graph(n=n, m=m, seed=42)
+        graph_label = f"Barabasi-Albert (n={n}, m={m})"
     
     print("\nStarting Stress Test...")
     # Save and show initial graph layout for visualization
@@ -79,7 +86,6 @@ def iterative_test(n, m, show_plots=True):
             linewidths=0.5, edge_color="gray", alpha=0.9)
     init_plot_path = f"initial_graph_{n}_{m}.png"
     plt.title(f"Initial Graph (n={n}, m={m})\nNode color & size represent degree", fontsize=14)
-    graph_label = f"Barabasi-Albert (n={n}, m={m})"
     plt.suptitle(f"Initial Graph Visualization — {graph_label}", fontsize=16, fontweight='bold')
     plt.xlabel("Layout X", fontsize=12)
     plt.ylabel("Layout Y", fontsize=12)
@@ -100,7 +106,6 @@ def iterative_test(n, m, show_plots=True):
     plt.figure(figsize=(10, 6))
     plt.plot(steps, connectivity, marker='o', linestyle='-', color='r', markersize=4)
     plt.title(f"Network Stress Test (n={n}, m={m}): Targeted Attack", fontsize=14)
-    graph_label = f"Barabasi-Albert (n={n}, m={m})"
     plt.suptitle(f"Stress Test: Targeted Node Removal — {graph_label}", fontsize=16, fontweight='bold')
     plt.xlabel("Number of Nodes Removed", fontsize=12)
     plt.ylabel("Size of Largest Connected Component", fontsize=12)
@@ -129,6 +134,9 @@ if __name__ == "__main__":
         for m in [2, 4, 6]:  # Number of edges to attach from a new node to existing nodes
             combos.append((n, m))
             args.append((n, m))
+    # Add a fully connected (complete) graph test for n=500
+    combos.append((500, 'complete'))
+    args.append((500, 'complete'))
 
     # Run tests in parallel to use more compute; avoid interactive plotting in workers
     cpu_count = os.cpu_count() or 1
