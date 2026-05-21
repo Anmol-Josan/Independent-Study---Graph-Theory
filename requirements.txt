@@ -2,3 +2,9 @@ numpy
 matplotlib
 networkx
 scipy
+pandas
+scikit-learn
+scanpy
+anndata
+psutil
+umap-learn

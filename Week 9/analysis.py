@@ -9,6 +9,9 @@ It also compares multiple dimensionality reduction techniques for performance.
 
 import os
 import time
+
+start_time = time.time()
+
 import logging
 import argparse
 import tarfile
